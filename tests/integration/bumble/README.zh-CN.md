@@ -9,7 +9,10 @@
 - 传统广播和被动扫描；
 - 覆盖三个广播信道的定向 CW 干扰、空间隔离和干扰后恢复；
 - Bumble Central 与 Peripheral 建立连接；
-- 扩展周期广播、周期同步和周期广播报告接收。
+- 扩展周期广播、周期同步和周期广播报告接收；
+- 加密链路上的 Enhanced ATT（EATT）：双方都通过 Server Supported Features 声明支持 EATT，并在 Client Supported Features 中记录 Enhanced ATT bearer 支持；客户端建立两条基于 L2CAP Credit 的 EATT bearer，并在这些 bearer 上并发完成 GATT 读和写，读回的值与另一条 bearer 写入的值一致。
+
+本套测试不覆盖 Multiple Handle Value Notification。Bumble 0.0.235 定义了 `ClientSupportedFeatures.MULTIPLE_HANDLE_VALUE_NOTIFICATIONS`，但没有实现 ATT Multiple Handle Value Notification PDU（opcode `0x23`），其 Generic Attribute Profile 服务也将该流程标记为尚未支持。
 
 安装 BSWorld 时会同时安装经过验证的 Bumble 版本：
 

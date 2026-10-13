@@ -105,7 +105,7 @@ pytest 侧的调度器保留标准 [asyncio](https://docs.python.org/3/library/a
 | 业务程序环境 | 已验证场景 | 文档 |
 |---|---|---|
 | Zephyr Bluetooth 示例程序 | 广播与扫描、定向干扰与恢复、Heart Rate Central/Peripheral、周期广播与同步、Mesh 配网和配置 | [测试说明](../../tests/integration/zephyr/samples/README.zh-CN.md) · [环境与构建](../../tests/integration/zephyr/samples/common/source/README.zh-CN.md) |
-| Bumble Python Host 协议栈 | 广播与扫描、定向干扰与恢复、连接、周期广播与同步 | [测试说明](../../tests/integration/bumble/README.zh-CN.md) |
+| Bumble Python Host 协议栈 | 广播与扫描、定向干扰与恢复、连接、周期广播与同步、加密 EATT | [测试说明](../../tests/integration/bumble/README.zh-CN.md) |
 | QEMU 中的 Linux 与 BlueZ | 通过 Linux Bluetooth 子系统完成 Controller 初始化、广播、扫描、建连和断连 | [测试说明](../../tests/integration/qemu/bluez/README.zh-CN.md) · [环境与构建](../../tests/integration/qemu/README.zh-CN.md) |
 | QEMU 中的 TrouBLE Rust Host 协议栈 | 通过 HCI User Channel 完成广播发现、建连、Battery Service 发现和 Battery Level 读取 | [测试说明](../../tests/integration/qemu/trouble/README.zh-CN.md) · [环境与构建](../../tests/integration/qemu/README.zh-CN.md) |
 | NuttX Bluetooth Socket / BTSak | 广播、扫描、Shell 动态控制、多广播设备、定向干扰与恢复 | [测试说明](../../tests/integration/nuttx/btsak/README.zh-CN.md) |
