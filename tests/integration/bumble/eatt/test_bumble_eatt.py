@@ -108,8 +108,19 @@ async def _characteristic(client: Client, service_uuid: UUID, characteristic_uui
     return characteristic
 
 
+def _has_eatt_support(value: bytes) -> bool:
+    return bool(value) and bool(value[0] & int(ServerSupportedFeatures.EATT_SUPPORTED))
+
+
 async def test_bumble_client_uses_concurrent_eatt_bearers(topo):
     peripheral_connected = asyncio.get_running_loop().create_future()
+    central_encrypted = asyncio.Event()
+    peripheral_encrypted = asyncio.Event()
+    eatt_supported = asyncio.Event()
+    eatt_features_recorded = asyncio.Event()
+    eatt_bearers_open = asyncio.Event()
+    initial_values_read = asyncio.Event()
+    cross_bearer_values_read = asyncio.Event()
 
     async with AsyncExitStack() as stack:
         peripheral_ctl = topo.add_controller(
@@ -159,9 +170,17 @@ async def test_bumble_client_uses_concurrent_eatt_bearers(topo):
             peripheral_connection = await asyncio.wait_for(peripheral_connected, timeout=TIMEOUT)
             assert central_connection.handle is not None
 
+            central_connection.on(
+                central_connection.EVENT_CONNECTION_ENCRYPTION_CHANGE,
+                lambda: central_encrypted.set() if central_connection.is_encrypted else None,
+            )
+            peripheral_connection.on(
+                peripheral_connection.EVENT_CONNECTION_ENCRYPTION_CHANGE,
+                lambda: peripheral_encrypted.set() if peripheral_connection.is_encrypted else None,
+            )
             await central_connection.pair()
-            assert central_connection.is_encrypted
-            assert peripheral_connection.is_encrypted
+            await asyncio.wait_for(central_encrypted.wait(), timeout=TIMEOUT)
+            await asyncio.wait_for(peripheral_encrypted.wait(), timeout=TIMEOUT)
 
             central_client = central_connection.gatt_client
             peripheral_client = peripheral_connection.gatt_client
@@ -177,8 +196,13 @@ async def test_bumble_client_uses_concurrent_eatt_bearers(topo):
                     GATT_SERVER_SUPPORTED_FEATURES_CHARACTERISTIC,
                 ),
             )
-            assert (await central_server_features.read_value())[0] & ServerSupportedFeatures.EATT_SUPPORTED
-            assert (await peripheral_server_features.read_value())[0] & ServerSupportedFeatures.EATT_SUPPORTED
+            central_supported, peripheral_supported = await asyncio.gather(
+                central_server_features.read_value(),
+                peripheral_server_features.read_value(),
+            )
+            if _has_eatt_support(central_supported) and _has_eatt_support(peripheral_supported):
+                eatt_supported.set()
+            await asyncio.wait_for(eatt_supported.wait(), timeout=TIMEOUT)
 
             central_client_features, peripheral_client_features = await asyncio.gather(
                 _characteristic(
@@ -192,28 +216,42 @@ async def test_bumble_client_uses_concurrent_eatt_bearers(topo):
                     GATT_CLIENT_SUPPORTED_FEATURES_CHARACTERISTIC,
                 ),
             )
-            enhanced_att = bytes([ClientSupportedFeatures.ENHANCED_ATT_BEARER])
+            enhanced_att = bytes([int(ClientSupportedFeatures.ENHANCED_ATT_BEARER)])
             await asyncio.gather(
                 central_client_features.write_value(enhanced_att, with_response=True),
                 peripheral_client_features.write_value(enhanced_att, with_response=True),
             )
-            assert await central_client_features.read_value() == enhanced_att
-            assert await peripheral_client_features.read_value() == enhanced_att
+            central_recorded, peripheral_recorded = await asyncio.gather(
+                central_client_features.read_value(),
+                peripheral_client_features.read_value(),
+            )
+            if central_recorded == enhanced_att and peripheral_recorded == enhanced_att:
+                eatt_features_recorded.set()
+            await asyncio.wait_for(eatt_features_recorded.wait(), timeout=TIMEOUT)
 
             alpha = await _characteristic(central_client, _SERVICE_UUID, _ALPHA_UUID)
             beta = await _characteristic(central_client, _SERVICE_UUID, _BETA_UUID)
             bearers = await Client.connect_eatt(central_connection, count=_EATT_BEARER_COUNT)
-            assert len(bearers) == _EATT_BEARER_COUNT
-            assert len({bearer.bearer.source_cid for bearer in bearers}) == _EATT_BEARER_COUNT
-            assert all(is_enhanced_bearer(bearer.bearer) and bearer.bearer.psm == EATT_PSM for bearer in bearers)
+            source_cids = [bearer.bearer.source_cid for bearer in bearers]
+            if (
+                len(bearers) == _EATT_BEARER_COUNT
+                and len(set(source_cids)) == _EATT_BEARER_COUNT
+                and all(
+                    is_enhanced_bearer(bearer.bearer) and bearer.bearer.psm == EATT_PSM
+                    for bearer in bearers
+                )
+            ):
+                eatt_bearers_open.set()
+            await asyncio.wait_for(eatt_bearers_open.wait(), timeout=TIMEOUT)
 
             first_bearer, second_bearer = bearers
             initial_alpha, initial_beta = await asyncio.gather(
                 first_bearer.read_value(alpha.handle),
                 second_bearer.read_value(beta.handle),
             )
-            assert initial_alpha == _ALPHA_INITIAL
-            assert initial_beta == _BETA_INITIAL
+            if initial_alpha == _ALPHA_INITIAL and initial_beta == _BETA_INITIAL:
+                initial_values_read.set()
+            await asyncio.wait_for(initial_values_read.wait(), timeout=TIMEOUT)
 
             await asyncio.gather(
                 first_bearer.write_value(alpha.handle, _ALPHA_UPDATED, with_response=True),
@@ -223,8 +261,9 @@ async def test_bumble_client_uses_concurrent_eatt_bearers(topo):
                 second_bearer.read_value(alpha.handle),
                 first_bearer.read_value(beta.handle),
             )
-            assert updated_alpha == _ALPHA_UPDATED
-            assert updated_beta == _BETA_UPDATED
+            if updated_alpha == _ALPHA_UPDATED and updated_beta == _BETA_UPDATED:
+                cross_bearer_values_read.set()
+            await asyncio.wait_for(cross_bearer_values_read.wait(), timeout=TIMEOUT)
         finally:
             if central_connection is not None:
                 await central_connection.disconnect()
