@@ -105,7 +105,7 @@ Deterministic execution, structured test results, and complete protocol records 
 | Application environment | Validated scenarios | Documentation |
 |---|---|---|
 | Zephyr Bluetooth samples | Broadcast/observe, targeted interference/recovery, Heart Rate central/peripheral, periodic advertising/sync, Mesh provisioning/configuration | [Tests](tests/integration/zephyr/samples/README.md) · [Environment and build](tests/integration/zephyr/samples/common/source/README.md) |
-| Bumble Python Host stack | Advertising/scanning, targeted interference/recovery, connection, periodic advertising/sync | [Tests](tests/integration/bumble/README.md) |
+| Bumble Python Host stack | Advertising/scanning, targeted interference/recovery, connection, periodic advertising/sync, encrypted EATT | [Tests](tests/integration/bumble/README.md) |
 | Linux and BlueZ under QEMU | Controller initialization, advertising, scanning, connection, and disconnection through the Linux Bluetooth subsystem | [Tests](tests/integration/qemu/bluez/README.md) · [Environment and build](tests/integration/qemu/README.md) |
 | TrouBLE Rust Host stack under QEMU | Advertising discovery, connection, Battery Service discovery, and Battery Level reads through HCI User Channel | [Tests](tests/integration/qemu/trouble/README.md) · [Environment and build](tests/integration/qemu/README.md) |
 | NuttX Bluetooth Socket / BTSak | Advertising, scanning, shell-driven control, multiple advertisers, targeted interference/recovery | [Tests](tests/integration/nuttx/btsak/README.md) |

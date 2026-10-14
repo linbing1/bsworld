@@ -9,7 +9,10 @@ The suite covers:
 - legacy advertising and passive scanning;
 - targeted CW interference across all three advertising channels, spatial isolation, and post-interference recovery;
 - connection establishment between a Bumble central and peripheral;
-- extended periodic advertising, periodic synchronization, and periodic report reception.
+- extended periodic advertising, periodic synchronization, and periodic report reception;
+- encrypted Enhanced ATT (EATT): both devices expose Server Supported Features with EATT, each records Enhanced ATT bearer support in Client Supported Features, the client opens two L2CAP credit-based EATT bearers, and concurrent GATT reads and writes on those bearers return the values written by the other bearer.
+
+Multiple Handle Value Notification is not part of this suite. Bumble 0.0.235 defines `ClientSupportedFeatures.MULTIPLE_HANDLE_VALUE_NOTIFICATIONS`, but it does not implement the ATT Multiple Handle Value Notification PDU (opcode `0x23`). Its Generic Attribute Profile service marks that procedure as unsupported.
 
 Installing BSWorld also installs the validated Bumble release:
 
