@@ -23,7 +23,7 @@ Retain `BSWORLD_ROOT`, `ZEPHYR_WORKSPACE`, `BSIM_OUT_PATH`, `BSIM_COMPONENTS_PAT
 
 ## Build and Run
 
-Each test directory's README documents its sample-specific `west build` commands, original output paths, environment variables, and pytest command. Follow the links in the table above. Build and test in the same shell, retaining exports when switching Python environments.
+Each test directory's README documents its sample-specific `west build` commands, original output paths, environment variables, and pytest command. Follow the links in the table above. Build and test in the same shell: activate `$ZEPHYR_WORKSPACE/.venv` for `west build` and `$BSWORLD_ROOT/.venv` for pytest; exported variables are kept when switching.
 
 After compiling every group and exporting its variables, run all groups in the BSWorld Python environment:
 

@@ -156,6 +156,8 @@ sudo apt-get install -y \
   gcc-multilib g++-multilib coreutils findutils grep sed gawk
 ```
 
+`gcc-multilib` and `g++-multilib` provide the 32-bit toolchain BabbleSim and Zephyr `nrf52_bsim` targets need.
+
 For a new checkout:
 
 ```sh
@@ -171,6 +173,8 @@ python3.12 -m venv .venv
 source .venv/bin/activate
 python -m pip install -e .
 ```
+
+This `.venv` is for `pip install -e .`, pytest, and `ruff`. `$ZEPHYR_WORKSPACE/.venv` holds `west` and Zephyr's Python requirements installed by `west packages pip --install`, and is used for `west build`. The [Zephyr workspace guide](tests/integration/zephyr/samples/common/source/README.md) creates it. Activate the environment for the next command. Switching environments changes `PATH` and leaves exported `BSWORLD_*` and BabbleSim variables set.
 
 For development checks:
 

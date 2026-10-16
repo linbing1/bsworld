@@ -6,7 +6,7 @@
 
 ## 准备工作区
 
-先按仓库 README 的[本地 Linux 环境搭建](../../../../../../docs/zh-CH/README.md#本地-linux)安装 BSWorld，再参考 Zephyr 官方[入门文档](https://docs.zephyrproject.org/latest/develop/getting_started/index.html)安装额外依赖，并创建以下工作区。源码版本与 Dockerfile 一致：
+先按仓库 README 的[本地 Linux 环境搭建](../../../../../../docs/zh-CH/README.md#本地-linux)安装 BSWorld，再参考 Zephyr 官方[入门文档](https://docs.zephyrproject.org/latest/develop/getting_started/index.html)安装额外依赖，并创建以下工作区。下面的命令使用 `$ZEPHYR_WORKSPACE/.venv` 运行 `west`；运行 pytest 前切回 `$BSWORLD_ROOT/.venv`。源码版本与 Dockerfile 一致：
 
 ```sh
 export ZEPHYR_WORKSPACE="$HOME/zephyrproject"

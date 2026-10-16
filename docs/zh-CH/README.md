@@ -156,6 +156,8 @@ sudo apt-get install -y \
   gcc-multilib g++-multilib coreutils findutils grep sed gawk
 ```
 
+`gcc-multilib` 和 `g++-multilib` 提供 BabbleSim 与 Zephyr `nrf52_bsim` 目标所需的 32 位工具链。
+
 首次使用时，先获取仓库：
 
 ```sh
@@ -171,6 +173,8 @@ python3.12 -m venv .venv
 source .venv/bin/activate
 python -m pip install -e .
 ```
+
+这个 `.venv` 用于 `pip install -e .`、pytest 和 `ruff`。`$ZEPHYR_WORKSPACE/.venv` 包含 `west`，以及 `west packages pip --install` 安装的 Zephyr Python 依赖，用于 `west build`。创建方法见 [Zephyr 工作区说明](../../tests/integration/zephyr/samples/common/source/README.zh-CN.md)。运行下一条命令前先激活对应环境。切换环境只会改变 `PATH`，已经导出的 `BSWORLD_*` 和 BabbleSim 变量会保留。
 
 开发检查：
 

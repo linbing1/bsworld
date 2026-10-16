@@ -23,7 +23,7 @@
 
 ## 构建与运行
 
-各测试目录的 README 分别记录本组示例的 `west build` 命令、原始产物路径、环境变量和 pytest 命令，见上表链接。构建及测试均在同一个 shell 中执行，切换 Python 环境时保留导出的变量。
+各测试目录的 README 分别记录本组示例的 `west build` 命令、原始产物路径、环境变量和 pytest 命令，见上表链接。在同一个 shell 中构建和测试：`west build` 时激活 `$ZEPHYR_WORKSPACE/.venv`，pytest 时激活 `$BSWORLD_ROOT/.venv`；切换时已导出的变量会保留。
 
 完成全部组的编译并导出变量后，可以在 BSWorld Python 环境中统一运行：
 

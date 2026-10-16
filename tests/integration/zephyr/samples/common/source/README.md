@@ -6,7 +6,7 @@ This directory maintains only BSWorld configuration: `bsim_host_only.overlay` se
 
 ## Prepare the Workspace
 
-Prepare BSWorld using the repository README's [local Linux setup](../../../../../../README.md#local-linux). Install Zephyr's additional dependencies from the official [Getting Started Guide](https://docs.zephyrproject.org/latest/develop/getting_started/index.html), then create the workspace below. The source revision matches the Dockerfile:
+Prepare BSWorld using the repository README's [local Linux setup](../../../../../../README.md#local-linux). Install Zephyr's additional dependencies from the official [Getting Started Guide](https://docs.zephyrproject.org/latest/develop/getting_started/index.html), then create the workspace below. The commands below use `$ZEPHYR_WORKSPACE/.venv` for `west`; switch back to `$BSWORLD_ROOT/.venv` before pytest. The source revision matches the Dockerfile:
 
 ```sh
 export ZEPHYR_WORKSPACE="$HOME/zephyrproject"
